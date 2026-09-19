@@ -24,7 +24,7 @@ The deployed application allows users to submit loan applicant information and r
 ---
 
 
----
+
 
 ### 🖥️ Application Preview
 
