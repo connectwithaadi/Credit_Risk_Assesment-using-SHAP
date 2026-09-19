@@ -5,8 +5,6 @@ import joblib
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-app = FastAPI()
-
 
 ml_model = {} #{"model":"credit_risk_model.pkl"}
 
@@ -23,6 +21,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+
+#The only columns that user will see and provide inputs.
 class LoanApplication(BaseModel): #Pydantic Model (Validation)
     person_age: int
     person_income: float
@@ -37,12 +37,8 @@ class LoanApplication(BaseModel): #Pydantic Model (Validation)
     cb_person_cred_hist_length: int
 
 
-@app.get("/")
-def greet():
-    return {"message": "Hello, I'm aadi"}
 
-
-@app.post("/predict")
+@app.post('/predict')
 def predict(data : LoanApplication):
     input_df = pd.DataFrame([data.dict()])
 
@@ -56,7 +52,5 @@ def predict(data : LoanApplication):
         "threshold": ml_model["threshold"],
         "Result": "High Risk" if prediction == 1 else "Low Risk"
     }
-
-
 
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
